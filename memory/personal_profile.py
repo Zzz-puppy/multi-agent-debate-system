@@ -3,18 +3,10 @@
 import json
 import os
 
-DEFAULT_PROFILE = {
-    "debate_count": 0,
-    "strong_topics": [],
-    "weak_topics": [],
-    "last_feedback": "",
-    "improvement_suggestions": [],
-}
+DEFAULT_PROFILE = {"debate_count":0,"strong_topics":[],"weak_topics":[],"last_feedback":"","improvement_suggestions":[]}
 
 
 class PersonalProfile:
-    """Stores per-agent personal history and experience."""
-
     def __init__(self, role: str, profile_dir: str = "data/profiles"):
         self.role = role
         self.profile_path = os.path.join(profile_dir, f"{role}.json")
@@ -31,21 +23,14 @@ class PersonalProfile:
         with open(self.profile_path, "w", encoding="utf-8") as f:
             json.dump(self.data, f, ensure_ascii=False, indent=2)
 
-    def update_after_debate(
-        self, topic: str, score: float, feedback: str,
-        strengths: list, weaknesses: list,
-    ) -> None:
+    def update_after_debate(self, topic: str, score: float, feedback: str, strengths: list, weaknesses: list) -> None:
         self.data["debate_count"] += 1
         self.data["last_feedback"] = feedback
-        if score >= 7:
-            self.data["strong_topics"].append(topic)
-        else:
-            self.data["weak_topics"].append(topic)
+        (self.data["strong_topics"] if score >= 7 else self.data["weak_topics"]).append(topic)
         if weaknesses:
             self.data["improvement_suggestions"].extend(weaknesses)
-        self.data["strong_topics"] = self.data["strong_topics"][-10:]
-        self.data["weak_topics"] = self.data["weak_topics"][-10:]
-        self.data["improvement_suggestions"] = self.data["improvement_suggestions"][-10:]
+        for k in ["strong_topics","weak_topics","improvement_suggestions"]:
+            self.data[k] = self.data[k][-10:]
         self.save()
 
     def get_strategy_advice(self) -> str:

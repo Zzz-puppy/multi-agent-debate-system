@@ -1,12 +1,8 @@
 """Short-term memory using LangGraph State management."""
-
 from typing import List, Optional
 from graph.state import AgentOutput
 
-
 class ShortTermMemory:
-    """Maintains the current debate session's conversation history."""
-
     def __init__(self):
         self._messages: List[AgentOutput] = []
         self._tool_cache: dict = {}
@@ -15,9 +11,7 @@ class ShortTermMemory:
         self._messages.append(message)
 
     def get_history(self, max_messages: Optional[int] = None) -> List[AgentOutput]:
-        if max_messages:
-            return self._messages[-max_messages:]
-        return self._messages
+        return self._messages[-max_messages:] if max_messages else self._messages
 
     def get_round_messages(self, round_num: int) -> List[AgentOutput]:
         return [m for m in self._messages if m["round_num"] == round_num]
@@ -29,8 +23,7 @@ class ShortTermMemory:
         return self._tool_cache.get(tool_name)
 
     def clear(self) -> None:
-        self._messages.clear()
-        self._tool_cache.clear()
+        self._messages.clear(); self._tool_cache.clear()
 
     def get_latest_opponent_message(self, my_role: str) -> Optional[AgentOutput]:
         for msg in reversed(self._messages):

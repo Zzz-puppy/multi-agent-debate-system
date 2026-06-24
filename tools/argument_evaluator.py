@@ -1,14 +1,6 @@
-"""Argument quality evaluation tool using LLM-as-a-Judge.
-
-Evaluates on 4 criteria aligned with the teacher's grading standard:
-- 逻辑性 (Logic)
-- 论据质量 (Evidence quality)
-- 反驳能力 (Rebuttal ability)
-- 语言表达 (Expression)
-"""
+"""Argument quality evaluation tool using LLM-as-a-Judge."""
 
 import json
-
 from utils.llm_manager import get_llm
 
 
@@ -27,8 +19,6 @@ EVALUATION_PROMPT = """你是一位辩论评审专家。请从以下四个维度
 
 
 class ArgumentEvaluatorTool:
-    """Evaluate argument quality on 4 dimensions matching teacher's standards."""
-
     def __init__(self, llm=None):
         self.llm = llm or get_llm(temperature=0.0)
 
@@ -41,16 +31,7 @@ class ArgumentEvaluatorTool:
                 if content.startswith("json"):
                     content = content[4:]
             result = json.loads(content.strip())
-            result["total_score"] = (
-                result.get("logic_score", 0) * 0.25
-                + result.get("evidence_score", 0) * 0.25
-                + result.get("rebuttal_score", 0) * 0.25
-                + result.get("expression_score", 0) * 0.25
-            )
+            result["total_score"] = sum(result.get(k, 0) * 0.25 for k in ["logic_score","evidence_score","rebuttal_score","expression_score"])
             return result
         except Exception as e:
-            return {
-                "logic_score": 0, "evidence_score": 0,
-                "rebuttal_score": 0, "expression_score": 0,
-                "total_score": 0, "comment": f"评估失败: {str(e)}",
-            }
+            return {"logic_score": 0, "evidence_score": 0, "rebuttal_score": 0, "expression_score": 0, "total_score": 0, "comment": f"评估失败: {str(e)}"}

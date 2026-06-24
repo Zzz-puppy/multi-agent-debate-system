@@ -138,9 +138,3 @@ python main.py
 ## 开源协议
 
 本项目基于 [MIT License](LICENSE) 开源。
-
-## 致谢
-
-- 课程《多智能体系统》大作业
-- LangGraph 框架提供了优秀的智能体编排能力
-- DeepSeek API 提供了强大的语言模型支持

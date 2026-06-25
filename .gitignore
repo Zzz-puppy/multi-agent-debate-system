@@ -2,6 +2,9 @@
 # 警告: 不要将 .env 文件提交到 Git，否则 API Key 会泄露！
 .env
 
+# Assignment reference document — not part of source code
+大作业参考文档.md
+
 # Python
 __pycache__/
 *.pyc
